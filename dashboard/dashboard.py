@@ -31,6 +31,11 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
+theme = st.context.theme or {}
+DARK_THEME = theme.get("base", st.get_option("theme.base") or "light") == "dark"
+if DARK_THEME:
+    COLORS["orange"] = "#ff8fab"
+
 
 @st.cache_data
 def load_data() -> tuple[pd.DataFrame, pd.DataFrame]:
@@ -97,12 +102,15 @@ def format_number(value: float) -> str:
 
 
 def polish_chart(fig: go.Figure, height: int = 360) -> go.Figure:
+    text_color = "#e7edf7" if DARK_THEME else "#344054"
+    axis_color = "#66758c" if DARK_THEME else "#e7eaf0"
+    grid_color = "#344054" if DARK_THEME else "#edf0f5"
     fig.update_layout(
         height=height,
         margin=dict(l=12, r=12, t=26, b=12),
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
-        font=dict(family="Inter, sans-serif", color="#344054", size=12),
+        font=dict(family="Inter, sans-serif", color=text_color, size=12),
         legend=dict(
             orientation="h",
             yanchor="bottom",
@@ -113,8 +121,8 @@ def polish_chart(fig: go.Figure, height: int = 360) -> go.Figure:
         ),
         hoverlabel=dict(bgcolor="#172b4d", font_color="white"),
     )
-    fig.update_xaxes(showgrid=False, linecolor="#e7eaf0")
-    fig.update_yaxes(gridcolor="#edf0f5", zeroline=False)
+    fig.update_xaxes(showgrid=False, linecolor=axis_color)
+    fig.update_yaxes(gridcolor=grid_color, zeroline=False)
     return fig
 
 
@@ -122,10 +130,13 @@ st.markdown(
     """
     <style>
     html, body, [class*="css"] { font-family: 'Aptos', 'Segoe UI', sans-serif; }
-    .stApp { background: #f5f7fb; }
+    .stApp { background: var(--dashboard-background); }
     [data-testid="stSidebar"] { background: #111b31; }
     [data-testid="stSidebar"] * { color: #eef2ff; }
     [data-testid="stSidebar"] [data-baseweb="select"] * { color: #263248; }
+    [data-testid="stSidebar"] [data-testid="stDateInput"] input {
+        color: #eef2ff !important; background: #1b2942 !important;
+    }
     .hero {
         padding: 1.6rem 1.8rem; border-radius: 22px; color: white;
         background: radial-gradient(circle at 85% 20%, #5d8dff 0, transparent 32%),
@@ -137,13 +148,27 @@ st.markdown(
     .eyebrow { color: #b7caff; font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; }
     h2, h3 { font-family: 'Aptos Display', 'Segoe UI', sans-serif; }
     [data-testid="stMetric"] {
-        background: white; border: 1px solid #e8ecf3; padding: 1rem 1.15rem;
+        background: var(--dashboard-card); border: 1px solid var(--dashboard-border); padding: 1rem 1.15rem;
         border-radius: 16px; box-shadow: 0 5px 18px rgba(27, 44, 75, .04);
     }
-    [data-testid="stMetricLabel"] { color: #667085; }
-    [data-testid="stMetricValue"] { color: #172b4d; font-family: 'Aptos Display', 'Segoe UI', sans-serif; }
+    [data-testid="stMetricLabel"] { color: var(--dashboard-muted); }
+    [data-testid="stMetricValue"] { color: var(--dashboard-text); font-family: 'Aptos Display', 'Segoe UI', sans-serif; }
     div[data-testid="stTabs"] button { font-weight: 600; }
-    .scope-note { color: #667085; font-size: .88rem; margin-top: -.5rem; }
+    .scope-note { color: var(--dashboard-muted); font-size: .88rem; margin-top: -.5rem; }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+st.markdown(
+    f"""
+    <style>
+    :root {{
+        --dashboard-background: {"#0e1117" if DARK_THEME else "#f5f7fb"};
+        --dashboard-card: {"#1b2435" if DARK_THEME else "#ffffff"};
+        --dashboard-border: {"#344054" if DARK_THEME else "#e8ecf3"};
+        --dashboard-muted: {"#b2bdd0" if DARK_THEME else "#667085"};
+        --dashboard-text: {"#eef2ff" if DARK_THEME else "#172b4d"};
+    }}
     </style>
     """,
     unsafe_allow_html=True,
