@@ -2,6 +2,10 @@
 
 Dashboard interaktif dibuat menggunakan Streamlit dan data `dashboard/main_data.csv`.
 
+## Dashboard online
+
+Buka dashboard di [herlanbikeanalysis.streamlit.app](https://herlanbikeanalysis.streamlit.app/).
+
 ## Instalasi
 
 Jalankan perintah berikut dari folder utama proyek:
@@ -16,7 +20,7 @@ python -m pip install -r requirements.txt
 python -m streamlit run dashboard/dashboard.py
 ```
 
-Setelah aplikasi berjalan, buka [http://localhost:8501](http://localhost:8501) di browser. URL ini hanya dapat diakses dari komputer yang menjalankan aplikasi. Untuk membagikan dashboard melalui internet, deploy aplikasi terlebih dahulu (misalnya ke Streamlit Community Cloud), lalu ganti alamat di `url.txt` dengan URL deployment.
+Setelah aplikasi berjalan, buka [http://localhost:8501](http://localhost:8501) di browser. URL ini hanya dapat diakses dari komputer yang menjalankan aplikasi.
 
 Pastikan `dashboard/main_data.csv` tersedia di samping `dashboard.py`. Gunakan pemilih rentang tanggal di sidebar bersama filter musim, kondisi cuaca, dan tipe pengguna (terdaftar/kasual); semua filter diterapkan pada ringkasan dan grafik analisis. Beberapa grafik tetap berfokus pada periode tertentu (2011, 2012, atau Q3 2012), sehingga dapat menampilkan pesan tanpa data jika rentang tanggal yang dipilih tidak mencakup periode tersebut. Data harian dideduplikasi berdasarkan `instant_day` agar tidak terhitung berulang.
 
